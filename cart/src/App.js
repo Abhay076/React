@@ -2,35 +2,43 @@ import React from "react";
 import Cart from "./Cart";
 // import React from "react";
 import Navbar from "./Navbar";
+// import firebase from 'firebase/compat/app';
+// import 'firebase/compat/auth';
+// import 'firebase/compat/firestore';
+// import db from "./index";
+import * as firebase from "firebase";
 class App extends React.Component{
 
   constructor (){
     super();
     this.state={
-        products:[
-            {
-                title:'Watch',
-                price:99,
-                qty:0,
-                img:'https://images.unsplash.com/photo-1622434641406-a158123450f9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=404&q=80',
-                id:1
-            },
-            {
-                title:'Mobile Phone',
-                price:999,
-                qty:0,
-                img:'https://images.unsplash.com/photo-1619017098958-57b1e2d275e4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=435&q=80',
-                id:2
-            },
-            {
-                title:'Laptop',
-                price:2999,
-                qty:0,
-                img:'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1172&q=80',
-                id:3
-            }
-        ]
+        products:[],
+        loading:true
     }
+}
+
+componentDidMount(){
+    firebase
+      .firestore()
+      .collection("products")
+      // .get()
+
+      .onSnapshot
+      ((snapshot) => {
+        console.log(snapshot);
+        snapshot.docs.map((doc) => {
+          console.log(doc.data());
+        });
+        const products = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          data["id"] = doc.id;
+          return data;
+        });
+        this.setState({
+          products,
+          loading:false
+        });
+      });
 }
 handleIncreaseQuantity=(product)=>{
     console.log("hey increase the qty by 1", product);
@@ -80,7 +88,7 @@ getCartTotal =()=>{
   return CartTotal;
 }
   render(){
-    const {products} =this.state;
+    const {products,loading} =this.state;
     return (
     <div className="App">
        <Navbar
@@ -92,6 +100,7 @@ getCartTotal =()=>{
       onDecreaseQuantity={this.handleDecreaseQuantity}
       onDeleteProduct={this.handleDeleteProducts}
       />
+      {loading && <h1>loading products...</h1>}
      <div style={{padding:10,fontSize:20}}>
        TOTAL: {this.getCartTotal()}
      </div>
