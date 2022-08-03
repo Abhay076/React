@@ -89,10 +89,20 @@ handleDecreaseQuantity=(product)=>{
 }
 handleDeleteProducts=(id)=>{
     const {products} = this.state;
-    const items = products.filter((item)=>item.id!==id);//{[]}
-    this.setState({
-        products:items
-    })
+    // const items = products.filter((item)=>item.id!==id);//{[]}
+    // this.setState({
+    //     products:items
+    // })
+    const docRef = this.db.collection('products').doc(id);
+
+    docRef
+       .delete()
+       .then(()=>{
+        console.log('Deleted successfully')
+       })
+       .catch((err)=>{
+         console.log('Error', err);
+       })
 }
 getCountCart =()=>{
   const {products}=this.state;
