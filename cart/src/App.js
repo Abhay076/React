@@ -46,11 +46,23 @@ handleIncreaseQuantity=(product)=>{
     const index = products.indexOf(product);
 
 
-    products[index].qty += 1;
+    // products[index].qty += 1;
 
-    this.setState({
-        products
-    });
+    // this.setState({
+    //     products
+    // });
+    const docRef = this.db.collection('products').doc(products[index].id);
+
+    docRef
+        .update({
+          qty:products[index].qty+1
+        })
+        .then(()=>{
+          console.log('Updated Successfully')
+        })
+        .catch((err)=>{
+          console.log('error',err);
+        })
 }
 handleDecreaseQuantity=(product)=>{
     console.log("hey decrease the qty by 1", product);
@@ -111,7 +123,7 @@ addProduct=()=>{
        <Navbar
        count={this.getCountCart()}
        />
-       <button onClick={this.addProduct}style={{padding:20,fontSize:20}}>Add a Product</button>
+       {/* <button onClick={this.addProduct}style={{padding:20,fontSize:20}}>Add a Product</button> */}
       <Cart
       products={products}
       onIncreaseQuantity={this.handleIncreaseQuantity}
