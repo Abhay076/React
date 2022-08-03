@@ -10,7 +10,7 @@ import * as firebase from "firebase";
 import 'firebase/firestore';
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  
+ 
 };
 
 // Initialize Firebase
